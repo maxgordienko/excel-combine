@@ -1,0 +1,49 @@
+Option Explicit  
+ 
+Sub CollectInfo()  
+Dim iSht As Worksheet  
+Dim iShtOpis As Worksheet  
+Dim Osnovanie As Range  
+Dim VsegoNaklad As Range  
+Dim i As Long  
+Dim lRow As Long, lastRow As Long  
+ 
+Application.ScreenUpdating = False  
+On Error Resume Next  
+Set iShtOpis = Sheets("Сводный отчет")  
+If iShtOpis Is Nothing Then  
+Set iShtOpis = Sheets.Add(Before:=Worksheets(1))  
+iShtOpis.Name = "Сводный отчет"  
+On Error GoTo 0  
+End If  
+Sheets(iShtOpis.Name).UsedRange.Clear  
+i = 2  
+ 
+For Each iSht In ThisWorkbook.Sheets  
+ 
+If iSht.Name <> iShtOpis.Name Then  
+If i > 2 Then  
+i = 3  
+lastRow = iShtOpis.Cells(Rows.Count, 1).End(xlUp).Row + 1  
+Else: lastRow = 1  
+End If  
+ 
+With iSht  
+lRow = .Cells(Rows.Count, 2).End(xlUp).Row  
+If lRow > 2 Then  
+.Range(.Cells(i, 1), .Cells(lRow, 20)).Copy iShtOpis.Cells(lastRow, 1)  
+End If  
+ 
+i = i + 1  
+End With  
+End If  
+Next  
+With iShtOpis  
+With iShtOpis.UsedRange.Cells  
+.Value = .Value  
+End With  
+ 
+End With  
+Application.ScreenUpdating = True  
+MsgBox "Данные собраны!", 64, "Сбор данных завершен"  
+End Sub  
